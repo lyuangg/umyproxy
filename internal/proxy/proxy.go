@@ -1,10 +1,11 @@
 package proxy
 
 import (
-	"github.com/lyuangg/umyproxy/protocol"
 	"log"
 	"net"
 	"os"
+
+	"github.com/lyuangg/umyproxy/protocol"
 )
 
 type (
@@ -84,36 +85,40 @@ func (p *Proxy) HandleConn(conn net.Conn) {
     }
     p.debugPrintf("client auth success")
 
+
     // 发送命令
     for {
-        cmdPacket, err := client.ReadPacket()
+        cmd, err := client.ReadPacket()
+
         if err != nil {
-            log.Printf("read client cmd err: %+v \n", err)
-            break
-        }
-        p.debugPrintf("read cmd: %+v", cmdPacket)
-
-        if protocol.IsQuitPacket(cmdPacket) {
-            p.debugPrintf("quit cmd")
-            break
+            log.Println("read cmd err: ", err)
+            return
         }
 
-        err2 := mysqlServ.WritePacket(cmdPacket)
-        if err2 != nil {
-            log.Printf("write cmd packet to server err: %+v \n", err2)
-            break
-        }
-        p.debugPrintf("write cmd to mysql")
+        p.debugPrintf("read cmd: %+v", cmd)
 
-        // read response
-        p.debugPrintf("start transport mysql response")
-        err = mysqlServ.TransportCmdResp(client)
+        if protocol.IsQuitPacket(cmd) {
+            p.debugPrintf("client quit")
+            return
+        }
+
+        err = mysqlServ.WritePacket(cmd)
         if err != nil {
-            log.Printf("transport response err: %+v \n", err)
-            break
+            log.Printf("write cmd to server err: %+v \n", err)
+            return
         }
-        p.debugPrintf("end transport mysql response")
+
+        // response
+        resp := protocol.NewResponse(mysqlServ, cmd.Payload[0])
+        err = resp.ResponsePacket(client)
+        p.debugPrintf("transport response")
+        if err != nil {
+            log.Println("transport response err:", err)
+            return
+        }
+        p.debugPrintf("end transport response")
     }
+
 }
 
 func (p *Proxy) Get() (protocol.Connector, error) {

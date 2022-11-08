@@ -44,3 +44,7 @@ mysql 配置增加
 ```
 go build -o umyproxy cmd/umyproxy/main.go 
 ```
+
+## demo
+
+![demo](./images/demo.png)

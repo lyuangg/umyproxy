@@ -12,7 +12,6 @@ type (
         ReadPacket() (Packet, error)
         WritePacket(Packet) error
         Auth(Connector) error
-        TransportCmdResp(Connector) error
         Closed() bool
         Expired(time.Duration) bool
         RefreshUseTime()
@@ -176,38 +175,6 @@ func (c *Conn) fakeAuth(client Connector) error {
     }
 
     return nil
-}
-
-func (c *Conn) TransportCmdResp(client Connector) error {
-    columnEnd := false
-
-    for {
-        respPacket, err := c.ReadPacket()
-        if err != nil {
-            return err
-        }
-        err = client.WritePacket(respPacket)
-        if err != nil {
-            return fmt.Errorf("write client err:%w", err)
-        }
-
-        if IsErrPacket(respPacket) {
-            return nil
-        }
-
-        if IsOkPacket(respPacket) {
-            return nil
-        }
-
-        if IsEofPacket(respPacket) {
-            if columnEnd {
-                // data end
-                return nil
-            } else {
-                columnEnd = true
-            }
-        }
-    }
 }
 
 func (c *Conn) Closed() bool {
