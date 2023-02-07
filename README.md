@@ -1,4 +1,7 @@
 # umyproxy
+![GitHub](https://img.shields.io/github/license/lyuangg/umyproxy?style=flat-square)
+![GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/lyuangg/umyproxy?style=flat-square&logo=go)
+![GitHub Repo stars](https://img.shields.io/github/stars/lyuangg/umyproxy?style=flat-square)
 
 `umyproxy` 是一个 mysql 的本地代理服务程序。
 可以为基于 php-fpm 的 PHP 程序提供 mysql 连接池的功能, 解决高并发中短连接产生大量 `TIME_WAIT` 的问题。
