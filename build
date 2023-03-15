@@ -1,0 +1,15 @@
+#!/bin/bash
+
+
+FILE=cmd/umyproxy/main.go
+OUT=bin
+
+echo "Building MacOS version..."
+env CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o $OUT/darwin-amd64 $FILE
+env CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o $OUT/darwin-arm64 $FILE
+
+echo "Building Linux version..."
+env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $OUT/linux-amd64 $FILE
+env CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o $OUT/linux-arm64 $FILE
+
+echo "Build complete"
