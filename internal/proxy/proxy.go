@@ -35,6 +35,15 @@ func (p *Proxy) Run() {
 	if err != nil {
 		log.Fatalln("Listen err:", err)
 	}
+	
+	
+	// Set socket file permissions
+	perm := os.FileMode(0777)
+	err = os.Chmod(p.socketFile, perm)
+	if err != nil {
+		panic(err)
+	}
+	
 	p.server = serv
 	p.startPrint()
 
