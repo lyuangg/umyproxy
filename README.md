@@ -45,9 +45,14 @@ mysql 配置增加
 ## 编译
 
 ```
-go build -o umyproxy cmd/umyproxy/main.go 
+./build
 ```
 
 ## demo
 
 ![demo](./images/demo.png)
+
+
+## laravel 使用
+
+[https://github.com/lyuangg/laravel-umyproxy](https://github.com/lyuangg/laravel-umyproxy)
